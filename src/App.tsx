@@ -1,4 +1,4 @@
-import Chessboard from "./components/Chessboard"
+import Chessboard from "./components/Chessboard/Chessboard"
 
 const App = () => {
   return (
