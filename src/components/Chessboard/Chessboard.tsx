@@ -25,7 +25,33 @@ for (let i = 0; i < 8; i++) {
 for (let i = 0; i < 8; i++) {
     pieces.push({ image: "assets/images/pawn_w.png", x: i, y: 1 })
 }
+let activePiece: HTMLElement | null = null;
 
+function grabPiece(e: React.MouseEvent) {
+    const element = e.target as HTMLElement
+    if (element.classList.contains("chess-piece")) {
+        const x = e.clientX - 50;
+        const y = e.clientY - 50;
+        element.style.position = "absolute";
+        element.style.left = `${x}px`;
+        element.style.top = `${y}px`;
+        activePiece = element;
+    }
+}
+function movePiece(e: React.MouseEvent) {
+    if (activePiece) {
+        const x = e.clientX - 50;
+        const y = e.clientY - 50;
+        activePiece.style.position = "absolute";
+        activePiece.style.left = `${x}px`;
+        activePiece.style.top = `${y}px`;
+    }
+}
+function dropPiece(e: React.MouseEvent) {
+    if (activePiece) {
+        activePiece = null;
+    }
+}
 const Chessboard = () => {
     const board = [];
     for (let j = verticalAxis.length - 1; j >= 0; j--) {
@@ -37,11 +63,16 @@ const Chessboard = () => {
                     image = p.image;
                 }
             })
-            board.push(<Tile image={image} number={number} />)
+            board.push(<Tile key={`${i}${j}`} image={image} number={number} />)
         }
     }
     return (
-        <div className="lg:h-[640px] lg:w-[640px] sm:w-[480px] sm:h-[480px] grid grid-cols-8 grid-rows-[8]">
+        <div
+            onMouseMove={(e) => movePiece(e)}
+            onMouseDown={e => grabPiece(e)}
+            onMouseUp={(e) => dropPiece(e)}
+            className="lg:h-[640px] lg:w-[640px] sm:w-[480px] sm:h-[480px] grid grid-cols-8 grid-rows-[8]"
+        >
             {board}
         </div>
     )
