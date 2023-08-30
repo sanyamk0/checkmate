@@ -69,7 +69,7 @@ const Chessboard = () => {
     function movePiece(e: React.MouseEvent) {
         const chessboard = chessboardRef.current;
         if (activePiece && chessboard) {
-            //Putting Constraints so that piece do not go outside chessboard
+            //Putting Constraints so that Piece do not Go Outside Chessboard
             const minX = chessboard.offsetLeft - 25;
             const minY = chessboard.offsetTop - 25;
             const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
@@ -77,7 +77,6 @@ const Chessboard = () => {
             const x = e.clientX - 50;
             const y = e.clientY - 50;
             activePiece.style.position = "absolute";
-
             if (x < minX) {
                 activePiece.style.left = `${minX}px`;
             } else if (x > maxX) {
@@ -85,7 +84,6 @@ const Chessboard = () => {
             } else {
                 activePiece.style.left = `${x}px`;
             }
-
             if (y < minY) {
                 activePiece.style.top = `${minY}px`;
             } else if (y > maxY) {
@@ -101,23 +99,30 @@ const Chessboard = () => {
         if (activePiece && chessboard) {
             const x = Math.floor((e.clientX - chessboard.offsetLeft) / 80);
             const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 640) / 80));
-            setPieces((value) => {
-                const pieces = value.map((p) => {
-                    if (p.x === gridX && p.y === gridY) {
-                        const validMove = referee.isValidMove(gridX, gridY, x, y, p.type, p.team, value);
-                        if (validMove) {
-                            p.x = x;
-                            p.y = y;
-                        } else {
-                            activePiece.style.position = "relative";
-                            activePiece.style.removeProperty("top");
-                            activePiece.style.removeProperty("left");
+            const currentPiece = pieces.find((p) => p.x === gridX && p.y === gridY);
+            const attackedPiece = pieces.find((p) => p.x === x && p.y === y);
+            if (currentPiece) {
+                const validMove = referee.isValidMove(gridX, gridY, x, y, currentPiece.type, currentPiece.team, pieces)
+                if (validMove) {
+                    //Updates Piece Position and if a Piece is Attacked Removes It
+                    const updatedPieces = pieces.reduce((results, piece) => {
+                        if (piece.x === currentPiece.x && piece.y === currentPiece.y) {
+                            piece.x = x;
+                            piece.y = y;
+                            results.push(piece);
+                        } else if (!(piece.x === x && piece.y === y)) {
+                            results.push(piece)
                         }
-                    }
-                    return p;
-                })
-                return pieces;
-            })
+                        return results;
+                    }, [] as Piece[]);
+                    setPieces(updatedPieces);
+                } else {
+                    //Reset Piece Position
+                    activePiece.style.position = "relative";
+                    activePiece.style.removeProperty("top");
+                    activePiece.style.removeProperty("left");
+                }
+            }
             setActivePiece(null);
         }
     }
