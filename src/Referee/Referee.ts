@@ -341,6 +341,62 @@ export default class Referee {
     }
     return false;
   }
+  queenMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    team: TeamType,
+    boardState: Piece[]
+  ): boolean {
+    for (let i = 1; i < 8; i++) {
+      //Vertical
+      if (desiredPosition.x === initialPosition.x) {
+        const multiplier = desiredPosition.y < initialPosition.y ? -1 : 1;
+        const paassedPosition: Position = {
+          x: initialPosition.x,
+          y: initialPosition.y + i * multiplier,
+        };
+        if (samePosition(paassedPosition, desiredPosition)) {
+          if (
+            this.tileIsEmptyOrOccupiedByOpponent(
+              paassedPosition,
+              boardState,
+              team
+            )
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(paassedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+      //Horizontal
+      if (desiredPosition.y === initialPosition.y) {
+        const multiplier = desiredPosition.x < initialPosition.x ? -1 : 1;
+        const paassedPosition: Position = {
+          x: initialPosition.x + i * multiplier,
+          y: initialPosition.y,
+        };
+        if (samePosition(paassedPosition, desiredPosition)) {
+          if (
+            this.tileIsEmptyOrOccupiedByOpponent(
+              paassedPosition,
+              boardState,
+              team
+            )
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(paassedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+    }
+    return false;
+  }
   isValidMove(
     initialPosition: Position,
     desiredPosition: Position,
@@ -376,6 +432,14 @@ export default class Referee {
         break;
       case PieceType.ROOK:
         validMove = this.rookMove(
+          initialPosition,
+          desiredPosition,
+          team,
+          boardState
+        );
+        break;
+      case PieceType.QUEEN:
+        validMove = this.queenMove(
           initialPosition,
           desiredPosition,
           team,
