@@ -180,7 +180,6 @@ export default class Referee {
             }
           }
         }
-
         //Bottom Right Movement
         if (
           desiredPosition.x > initialPosition.x &&
@@ -209,7 +208,6 @@ export default class Referee {
             }
           }
         }
-
         //Top Left Movement
         if (
           desiredPosition.x < initialPosition.x &&
@@ -238,7 +236,6 @@ export default class Referee {
             }
           }
         }
-
         //Bottom Left Movement
         if (
           desiredPosition.x < initialPosition.x &&
@@ -247,6 +244,61 @@ export default class Referee {
           const passedPosition: Position = {
             x: initialPosition.x - i,
             y: initialPosition.y - i,
+          };
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
+          }
+        }
+      }
+    } else if (type === PieceType.ROOK) {
+      if (initialPosition.x === desiredPosition.x) {
+        for (let i = 1; i < 8; i++) {
+          const multiplier = desiredPosition.y < initialPosition.y ? -1 : 1;
+          const passedPosition: Position = {
+            x: initialPosition.x,
+            y: initialPosition.y + i * multiplier,
+          };
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
+          }
+        }
+      }
+      if (initialPosition.y === desiredPosition.y) {
+        for (let i = 1; i < 8; i++) {
+          const multiplier = desiredPosition.x < initialPosition.x ? -1 : 1;
+          const passedPosition: Position = {
+            x: initialPosition.x + i * multiplier,
+            y: initialPosition.y,
           };
           if (
             passedPosition.x === desiredPosition.x &&
