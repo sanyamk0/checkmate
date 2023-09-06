@@ -150,6 +150,124 @@ export default class Referee {
           }
         }
       }
+    } else if (type === PieceType.BISHOP) {
+      for (let i = 1; i < 8; i++) {
+        //Top Right Movement
+        if (
+          desiredPosition.x > initialPosition.x &&
+          desiredPosition.y > initialPosition.y
+        ) {
+          const passedPosition: Position = {
+            x: initialPosition.x + i,
+            y: initialPosition.y + i,
+          };
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
+          }
+        }
+
+        //Bottom Right Movement
+        if (
+          desiredPosition.x > initialPosition.x &&
+          desiredPosition.y < initialPosition.y
+        ) {
+          const passedPosition: Position = {
+            x: initialPosition.x + i,
+            y: initialPosition.y - i,
+          };
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
+          }
+        }
+
+        //Top Left Movement
+        if (
+          desiredPosition.x < initialPosition.x &&
+          desiredPosition.y > initialPosition.y
+        ) {
+          const passedPosition: Position = {
+            x: initialPosition.x - i,
+            y: initialPosition.y + i,
+          };
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
+          }
+        }
+
+        //Bottom Left Movement
+        if (
+          desiredPosition.x < initialPosition.x &&
+          desiredPosition.y < initialPosition.y
+        ) {
+          const passedPosition: Position = {
+            x: initialPosition.x - i,
+            y: initialPosition.y - i,
+          };
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
+          }
+        }
+      }
     }
     return false;
   }
