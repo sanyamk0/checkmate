@@ -348,50 +348,39 @@ export default class Referee {
     boardState: Piece[]
   ): boolean {
     for (let i = 1; i < 8; i++) {
-      //Vertical
-      if (desiredPosition.x === initialPosition.x) {
-        const multiplier = desiredPosition.y < initialPosition.y ? -1 : 1;
-        const paassedPosition: Position = {
-          x: initialPosition.x,
-          y: initialPosition.y + i * multiplier,
-        };
-        if (samePosition(paassedPosition, desiredPosition)) {
-          if (
-            this.tileIsEmptyOrOccupiedByOpponent(
-              paassedPosition,
-              boardState,
-              team
-            )
-          ) {
-            return true;
-          }
-        } else {
-          if (this.tileIsOccupied(paassedPosition, boardState)) {
-            break;
-          }
-        }
+      let multiplierX;
+      if (desiredPosition.x < initialPosition.x) {
+        multiplierX = -1;
+      } else if (desiredPosition.x > initialPosition.x) {
+        multiplierX = 1;
+      } else {
+        multiplierX = 0;
       }
-      //Horizontal
-      if (desiredPosition.y === initialPosition.y) {
-        const multiplier = desiredPosition.x < initialPosition.x ? -1 : 1;
-        const paassedPosition: Position = {
-          x: initialPosition.x + i * multiplier,
-          y: initialPosition.y,
-        };
-        if (samePosition(paassedPosition, desiredPosition)) {
-          if (
-            this.tileIsEmptyOrOccupiedByOpponent(
-              paassedPosition,
-              boardState,
-              team
-            )
-          ) {
-            return true;
-          }
-        } else {
-          if (this.tileIsOccupied(paassedPosition, boardState)) {
-            break;
-          }
+      let multiplierY;
+      if (desiredPosition.y < initialPosition.y) {
+        multiplierY = -1;
+      } else if (desiredPosition.y > initialPosition.y) {
+        multiplierY = 1;
+      } else {
+        multiplierY = 0;
+      }
+      const paassedPosition: Position = {
+        x: initialPosition.x + i * multiplierX,
+        y: initialPosition.y + i * multiplierY,
+      };
+      if (samePosition(paassedPosition, desiredPosition)) {
+        if (
+          this.tileIsEmptyOrOccupiedByOpponent(
+            paassedPosition,
+            boardState,
+            team
+          )
+        ) {
+          return true;
+        }
+      } else {
+        if (this.tileIsOccupied(paassedPosition, boardState)) {
+          break;
         }
       }
     }
