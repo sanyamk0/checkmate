@@ -21,10 +21,18 @@
 .white-tile {
   background-color: #ebecd0;
 }
-.tile-highlight::before {
+.tile-highlight:not(.chess-piece-tile)::before {
   content: " ";
   width: 24px;
   height: 24px;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.4);
+}
+.tile-highlight.chess-piece-tile::before {
+  position: absolute;
+  content: " ";
+  width: 80px;
+  height: 80px;
+  border: 5px solid rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
 }
