@@ -1,4 +1,5 @@
-import { Piece, Position, TeamType, samePosition } from "../../Constants";
+import { TeamType } from "../../Types";
+import { Piece, Position } from "../../models";
 import {
   tileIsEmptyOrOccupiedByOpponent,
   tileIsOccupied,
@@ -24,16 +25,16 @@ export const queenMove = (
         : desiredPosition.y > initialPosition.y
         ? 1
         : 0;
-    const paassedPosition: Position = {
-      x: initialPosition.x + i * multiplierX,
-      y: initialPosition.y + i * multiplierY,
-    };
-    if (samePosition(paassedPosition, desiredPosition)) {
-      if (tileIsEmptyOrOccupiedByOpponent(paassedPosition, boardState, team)) {
+    const passedPosition = new Position(
+      initialPosition.x + i * multiplierX,
+      initialPosition.y + i * multiplierY
+    );
+    if (passedPosition.samePosition(desiredPosition)) {
+      if (tileIsEmptyOrOccupiedByOpponent(passedPosition, boardState, team)) {
         return true;
       }
     } else {
-      if (tileIsOccupied(paassedPosition, boardState)) {
+      if (tileIsOccupied(passedPosition, boardState)) {
         break;
       }
     }
@@ -47,10 +48,10 @@ export const getPossibleQueenMoves = (
   const possibleMoves: Position[] = [];
   //Top Right Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x + i,
-      y: queen.position.y + i,
-    };
+    const destination = new Position(
+      queen.position.x + i,
+      queen.position.y + i
+    );
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
@@ -62,10 +63,10 @@ export const getPossibleQueenMoves = (
   }
   //Bottom Right Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x + i,
-      y: queen.position.y - i,
-    };
+    const destination = new Position(
+      queen.position.x + i,
+      queen.position.y - i
+    );
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
@@ -77,10 +78,10 @@ export const getPossibleQueenMoves = (
   }
   //Top Left Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x - i,
-      y: queen.position.y + i,
-    };
+    const destination = new Position(
+      queen.position.x - i,
+      queen.position.y + i
+    );
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
@@ -92,10 +93,10 @@ export const getPossibleQueenMoves = (
   }
   //Bottom Left Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x - i,
-      y: queen.position.y - i,
-    };
+    const destination = new Position(
+      queen.position.x - i,
+      queen.position.y - i
+    );
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
@@ -107,10 +108,7 @@ export const getPossibleQueenMoves = (
   }
   //Top Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x,
-      y: queen.position.y + i,
-    };
+    const destination = new Position(queen.position.x, queen.position.y + i);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
@@ -122,10 +120,7 @@ export const getPossibleQueenMoves = (
   }
   //Right Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x + i,
-      y: queen.position.y,
-    };
+    const destination = new Position(queen.position.x + i, queen.position.y);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
@@ -137,10 +132,7 @@ export const getPossibleQueenMoves = (
   }
   //Bottom Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x,
-      y: queen.position.y - i,
-    };
+    const destination = new Position(queen.position.x, queen.position.y - i);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
@@ -152,10 +144,7 @@ export const getPossibleQueenMoves = (
   }
   //Left Preview
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: queen.position.x - i,
-      y: queen.position.y,
-    };
+    const destination = new Position(queen.position.x - i, queen.position.y);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileIsOccupiedByOpponent(destination, boardState, queen.team)) {
