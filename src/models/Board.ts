@@ -13,18 +13,30 @@ import {
 
 export class Board {
   pieces: Piece[];
-  constructor(pieces: Piece[]) {
+  totalTurns: number;
+  constructor(pieces: Piece[], totalTurns: number) {
     this.pieces = pieces;
+    this.totalTurns = totalTurns;
+  }
+  get currentTeam(): TeamType {
+    return this.totalTurns % 2 === 0 ? TeamType.OPPONENT : TeamType.OUR;
   }
   calculateAllMoves() {
     for (const piece of this.pieces) {
       piece.possibleMoves = this.getValidMoves(piece, this.pieces);
     }
+    //Check if King Moves are Valid
     this.checkingMoves();
+    //Remove the Possible Moves for the Team that is Not Playing
+    for (const piece of this.pieces.filter(
+      (p) => p.team !== this.currentTeam
+    )) {
+      piece.possibleMoves = [];
+    }
   }
   checkingMoves() {
     const king = this.pieces.find(
-      (p) => p.isKing && p.team === TeamType.OPPONENT
+      (p) => p.isKing && p.team === this.currentTeam
     );
     if (king?.possibleMoves === undefined) {
       return;
@@ -40,11 +52,11 @@ export class Board {
         );
       }
       const simulatedKing = simulatedBoard.pieces.find(
-        (p) => p.isKing && p.team === TeamType.OPPONENT
+        (p) => p.isKing && p.team === simulatedBoard.currentTeam
       );
       simulatedKing!.position = move;
       for (const enemy of simulatedBoard.pieces.filter(
-        (p) => p.team === TeamType.OUR
+        (p) => p.team !== simulatedBoard.currentTeam
       )) {
         enemy.possibleMoves = simulatedBoard.getValidMoves(
           enemy,
@@ -53,7 +65,7 @@ export class Board {
       }
       let safe = true;
       for (const p of simulatedBoard.pieces) {
-        if (p.team === TeamType.OPPONENT) {
+        if (p.team === simulatedBoard.currentTeam) {
           continue;
         }
         if (p.isPawn) {
@@ -156,6 +168,9 @@ export class Board {
     return true;
   }
   clone(): Board {
-    return new Board(this.pieces.map((p) => p.clone()));
+    return new Board(
+      this.pieces.map((p) => p.clone()),
+      this.totalTurns
+    );
   }
 }

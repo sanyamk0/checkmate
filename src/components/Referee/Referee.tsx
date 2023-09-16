@@ -13,14 +13,19 @@ export default function Referee() {
     const modalRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        updatePossibleMoves();
+        board.calculateAllMoves();
     }, [])
 
-    function updatePossibleMoves() {
-        board.calculateAllMoves();
-    }
     function playMove(playedPiece: Piece, destination: Position): boolean {
+        //If Playing Piece doesn't have any moves return
         if (playedPiece.possibleMoves === undefined) {
+            return false;
+        }
+        //Preventing Inactive Team from Playing
+        if (playedPiece.team === TeamType.OUR && board.totalTurns % 2 !== 1) {
+            return false;
+        }
+        if (playedPiece.team === TeamType.OPPONENT && board.totalTurns % 2 !== 0) {
             return false;
         }
         let playedMoveIsValid = false;
@@ -30,8 +35,10 @@ export default function Referee() {
         }
         const enPassantMove = isEnPassantmove(playedPiece.position, destination, playedPiece.type, playedPiece.team)
         setBoard((previousBoard) => {
-            playedMoveIsValid = board.playMove(enPassantMove, validMove, playedPiece, destination);
-            return board.clone();
+            const clonedBoard = board.clone();
+            clonedBoard.totalTurns += 1;
+            playedMoveIsValid = clonedBoard.playMove(enPassantMove, validMove, playedPiece, destination);
+            return clonedBoard;
         })
         const promotionRow = playedPiece.team === TeamType.OUR ? 7 : 0;
         if (destination.y === promotionRow && playedPiece.isPawn) {
@@ -150,6 +157,7 @@ export default function Referee() {
     }
     return (
         <>
+            <p style={{ color: "white", fontSize: "24px" }}>{board.totalTurns}</p>
             <div className="absolute top-0 right-0 bottom-0 left-0 hidden" ref={modalRef}>
                 <div className="flex justify-around items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-60 w-[640px] bg-[rgba(127,127,127,0.7)]">
                     <img onClick={() => promotePawn(PieceType.ROOK)} className="h-[120px] hover:cursor-pointer hover:bg-[rgba(255,255,255,0.3)] rounded-full p-5" src={`assets/images/rook_${promotionTeamType()}.png`} />
