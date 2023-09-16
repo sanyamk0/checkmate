@@ -25,8 +25,8 @@ export class Board {
     for (const piece of this.pieces) {
       piece.possibleMoves = this.getValidMoves(piece, this.pieces);
     }
-    //Check if King Moves are Valid
-    this.checkingMoves();
+    //Check if Current Team Moves are Valid
+    this.checkCurrentTeamMoves();
     //Remove the Possible Moves for the Team that is Not Playing
     for (const piece of this.pieces.filter(
       (p) => p.team !== this.currentTeam
@@ -34,62 +34,61 @@ export class Board {
       piece.possibleMoves = [];
     }
   }
-  checkingMoves() {
-    const king = this.pieces.find(
-      (p) => p.isKing && p.team === this.currentTeam
-    );
-    if (king?.possibleMoves === undefined) {
-      return;
-    }
-    for (const move of king.possibleMoves) {
-      const simulatedBoard = this.clone();
-      const pieceAtDestination = simulatedBoard.pieces.find((p) =>
-        p.samePosition(move)
-      );
-      if (pieceAtDestination !== undefined) {
+
+  checkCurrentTeamMoves() {
+    //Loop Through All the Current Team Pieces
+    for (const piece of this.pieces.filter(
+      (p) => p.team === this.currentTeam
+    )) {
+      if (piece.possibleMoves === undefined) continue;
+      //Simulate all Piece Moves
+      for (const move of piece.possibleMoves) {
+        const simulatedBoard = this.clone();
+        //Remove the Piece at the Destination Position
         simulatedBoard.pieces = simulatedBoard.pieces.filter(
           (p) => !p.samePosition(move)
         );
-      }
-      const simulatedKing = simulatedBoard.pieces.find(
-        (p) => p.isKing && p.team === simulatedBoard.currentTeam
-      );
-      simulatedKing!.position = move;
-      for (const enemy of simulatedBoard.pieces.filter(
-        (p) => p.team !== simulatedBoard.currentTeam
-      )) {
-        enemy.possibleMoves = simulatedBoard.getValidMoves(
-          enemy,
-          simulatedBoard.pieces
+        //Get the Piece of ClonedBoard
+        const clonedPiece = simulatedBoard.pieces.find((p) =>
+          p.samePiecePosition(piece)
+        )!;
+        clonedPiece.position = move.clone();
+        //Get the King of ClonedBoard
+        const clonedKing = simulatedBoard.pieces.find(
+          (p) => p.isKing && p.team === simulatedBoard.currentTeam
         );
-      }
-      let safe = true;
-      for (const p of simulatedBoard.pieces) {
-        if (p.team === simulatedBoard.currentTeam) {
-          continue;
-        }
-        if (p.isPawn) {
-          const possiblePawnMoves = simulatedBoard.getValidMoves(
-            p,
+        //Loop through all Enemy Pieces, Update their Possible Moves and Check if Current Team's King will be in Danger
+        for (const enemy of simulatedBoard.pieces.filter(
+          (p) => p.team !== simulatedBoard.currentTeam
+        )) {
+          enemy.possibleMoves = simulatedBoard.getValidMoves(
+            enemy,
             simulatedBoard.pieces
           );
-          if (
-            possiblePawnMoves?.some(
-              (ppm) => ppm.x !== p.position.x && ppm.samePosition(move)
-            )
-          ) {
-            safe = false;
-            break;
+          if (enemy.isPawn) {
+            if (
+              enemy.possibleMoves.some(
+                (m) =>
+                  m.x !== enemy.position.x &&
+                  m.samePosition(clonedKing.position)
+              )
+            ) {
+              piece.possibleMoves = piece.possibleMoves?.filter(
+                (m) => !m.samePosition(move)
+              );
+            }
+          } else {
+            if (
+              enemy.possibleMoves.some((m) =>
+                m.samePosition(clonedKing.position)
+              )
+            ) {
+              piece.possibleMoves = piece.possibleMoves?.filter(
+                (m) => !m.samePosition(move)
+              );
+            }
           }
-        } else if (p.possibleMoves?.some((p) => p.samePosition(move))) {
-          safe = false;
-          break;
         }
-      }
-      if (!safe) {
-        king.possibleMoves = king.possibleMoves?.filter(
-          (m) => !m.samePosition(move)
-        );
       }
     }
   }
