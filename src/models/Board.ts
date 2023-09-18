@@ -86,27 +86,30 @@ export class Board {
             enemy,
             simulatedBoard.pieces
           );
-          if (enemy.isPawn) {
-            if (
-              enemy.possibleMoves.some(
-                (m) =>
-                  m.x !== enemy.position.x &&
+          // Check if clonedKing is defined before using it
+          if (clonedKing) {
+            if (enemy.isPawn) {
+              if (
+                enemy.possibleMoves.some(
+                  (m) =>
+                    m.x !== enemy.position.x &&
+                    m.samePosition(clonedKing.position)
+                )
+              ) {
+                piece.possibleMoves = piece.possibleMoves?.filter(
+                  (m) => !m.samePosition(move)
+                );
+              }
+            } else {
+              if (
+                enemy.possibleMoves.some((m) =>
                   m.samePosition(clonedKing.position)
-              )
-            ) {
-              piece.possibleMoves = piece.possibleMoves?.filter(
-                (m) => !m.samePosition(move)
-              );
-            }
-          } else {
-            if (
-              enemy.possibleMoves.some((m) =>
-                m.samePosition(clonedKing.position)
-              )
-            ) {
-              piece.possibleMoves = piece.possibleMoves?.filter(
-                (m) => !m.samePosition(move)
-              );
+                )
+              ) {
+                piece.possibleMoves = piece.possibleMoves?.filter(
+                  (m) => !m.samePosition(move)
+                );
+              }
             }
           }
         }
