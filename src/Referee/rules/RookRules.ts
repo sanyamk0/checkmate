@@ -57,6 +57,8 @@ export const getPossibleRookMoves = (
   const possibleMoves: Position[] = [];
   //Top Preview
   for (let i = 1; i < 8; i++) {
+    //Stop Checking if move is outside of the Board
+    if (rook.position.y + i > 7) break;
     const destination = new Position(rook.position.x, rook.position.y + i);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
@@ -69,6 +71,8 @@ export const getPossibleRookMoves = (
   }
   //Right Preview
   for (let i = 1; i < 8; i++) {
+    //Stop Checking if move is outside of the Board
+    if (rook.position.x + i > 7) break;
     const destination = new Position(rook.position.x + i, rook.position.y);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
@@ -81,6 +85,8 @@ export const getPossibleRookMoves = (
   }
   //Bottom Preview
   for (let i = 1; i < 8; i++) {
+    //Stop Checking if move is outside of the Board
+    if (rook.position.y - i < 0) break;
     const destination = new Position(rook.position.x, rook.position.y - i);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);
@@ -93,6 +99,8 @@ export const getPossibleRookMoves = (
   }
   //Left Preview
   for (let i = 1; i < 8; i++) {
+    //Stop Checking if move is outside of the Board
+    if (rook.position.x - i < 0) break;
     const destination = new Position(rook.position.x - i, rook.position.y);
     if (!tileIsOccupied(destination, boardState)) {
       possibleMoves.push(destination);

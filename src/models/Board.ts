@@ -9,6 +9,7 @@ import {
   getPossiblePawnMoves,
   getPossibleQueenMoves,
   getPossibleRookMoves,
+  getCastlingMoves,
 } from "../Referee/rules";
 
 export class Board {
@@ -24,6 +25,14 @@ export class Board {
   calculateAllMoves() {
     for (const piece of this.pieces) {
       piece.possibleMoves = this.getValidMoves(piece, this.pieces);
+    }
+    //Calculate Castling Moves
+    for (const king of this.pieces.filter((p) => p.isKing)) {
+      if (king.possibleMoves === undefined) continue;
+      king.possibleMoves = [
+        ...king.possibleMoves,
+        ...getCastlingMoves(king, this.pieces),
+      ];
     }
     //Check if Current Team Moves are Valid
     this.checkCurrentTeamMoves();
@@ -117,6 +126,29 @@ export class Board {
     destination: Position
   ): boolean {
     const pawnDirection = playedPiece.team === TeamType.OUR ? 1 : -1;
+    const destinationPiece = this.pieces.find((p) =>
+      p.samePosition(destination)
+    );
+    //If the move is a castling move do this
+    if (
+      playedPiece.isKing &&
+      destinationPiece?.isRook &&
+      destinationPiece.team === playedPiece.team
+    ) {
+      const direction =
+        destinationPiece.position.x - playedPiece.position.x > 0 ? 1 : -1;
+      const newKingXPosition = playedPiece.position.x + direction * 2;
+      this.pieces = this.pieces.map((p) => {
+        if (p.samePiecePosition(playedPiece)) {
+          p.position.x = newKingXPosition;
+        } else if (p.samePiecePosition(destinationPiece)) {
+          p.position.x = newKingXPosition - direction;
+        }
+        return p;
+      });
+      this.calculateAllMoves();
+      return true;
+    }
     if (enPassantMove) {
       this.pieces = this.pieces.reduce((results, piece) => {
         if (piece.samePiecePosition(playedPiece)) {
@@ -125,6 +157,7 @@ export class Board {
           }
           piece.position.x = destination.x;
           piece.position.y = destination.y;
+          piece.hasMoved = true;
           results.push(piece);
         } else if (
           !piece.samePosition(
@@ -150,7 +183,7 @@ export class Board {
           }
           piece.position.x = destination.x;
           piece.position.y = destination.y;
-
+          piece.hasMoved = true;
           results.push(piece);
         } else if (!piece.samePosition(destination)) {
           if (piece.isPawn) {

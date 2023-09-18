@@ -34,7 +34,7 @@ export default function Referee() {
             return false;
         }
         const enPassantMove = isEnPassantmove(playedPiece.position, destination, playedPiece.type, playedPiece.team)
-        setBoard((previousBoard) => {
+        setBoard(() => {
             const clonedBoard = board.clone();
             clonedBoard.totalTurns += 1;
             playedMoveIsValid = clonedBoard.playMove(enPassantMove, validMove, playedPiece, destination);
@@ -141,7 +141,7 @@ export default function Referee() {
             const clonedBoard = board.clone()
             clonedBoard.pieces = clonedBoard.pieces.reduce((results, piece) => {
                 if (piece.samePiecePosition(promotionPawn)) {
-                    results.push(new Piece(piece.position.clone(), pieceType, piece.team))
+                    results.push(new Piece(piece.position.clone(), pieceType, piece.team, true))
                 } else {
                     results.push(piece);
                 }
