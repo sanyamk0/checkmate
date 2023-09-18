@@ -15,6 +15,7 @@ import {
 export class Board {
   pieces: Piece[];
   totalTurns: number;
+  winningTeam?: TeamType;
   constructor(pieces: Piece[], totalTurns: number) {
     this.pieces = pieces;
     this.totalTurns = totalTurns;
@@ -42,8 +43,19 @@ export class Board {
     )) {
       piece.possibleMoves = [];
     }
+    //Check if the Playing Team still has moves left, Otherwise checkmate!!
+    if (
+      this.pieces
+        .filter((p) => p.team === this.currentTeam)
+        .some(
+          (p) => p.possibleMoves !== undefined && p.possibleMoves.length > 0
+        )
+    ) {
+      return;
+    }
+    this.winningTeam =
+      this.currentTeam === TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR;
   }
-
   checkCurrentTeamMoves() {
     //Loop Through All the Current Team Pieces
     for (const piece of this.pieces.filter(

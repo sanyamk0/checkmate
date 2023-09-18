@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { initialBoard } from "../../Constants";
 import Chessboard from "../Chessboard/Chessboard";
 import { bishopMove, kingMove, knightMove, pawnMove, queenMove, rookMove } from "../../Referee/rules";
@@ -8,13 +8,11 @@ import { Pawn } from "../../models/Pawn";
 import { Board } from "../../models/Board";
 
 export default function Referee() {
-    const [board, setBoard] = useState<Board>(initialBoard);
+    const [board, setBoard] = useState<Board>(initialBoard.clone());
     const [promotionPawn, setPromotionPawn] = useState<Piece>()
     const modalRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        board.calculateAllMoves();
-    }, [])
+    const checkmateModalRef = useRef<HTMLDivElement>(null)
+    const mover = board.totalTurns % 2 === 0 ? "Black" : "White";
 
     function playMove(playedPiece: Piece, destination: Position): boolean {
         //If Playing Piece doesn't have any moves return
@@ -38,6 +36,9 @@ export default function Referee() {
             const clonedBoard = board.clone();
             clonedBoard.totalTurns += 1;
             playedMoveIsValid = clonedBoard.playMove(enPassantMove, validMove, playedPiece, destination);
+            if (clonedBoard.winningTeam !== undefined) {
+                checkmateModalRef.current?.classList.remove("hidden");
+            }
             return clonedBoard;
         })
         const promotionRow = playedPiece.team === TeamType.OUR ? 7 : 0;
@@ -137,7 +138,7 @@ export default function Referee() {
     }
     function promotePawn(pieceType: PieceType) {
         if (promotionPawn === undefined) { return; }
-        setBoard((previousBoard) => {
+        setBoard(() => {
             const clonedBoard = board.clone()
             clonedBoard.pieces = clonedBoard.pieces.reduce((results, piece) => {
                 if (piece.samePiecePosition(promotionPawn)) {
@@ -155,15 +156,30 @@ export default function Referee() {
     function promotionTeamType() {
         return promotionPawn?.team === TeamType.OUR ? "w" : "b";
     }
+    function restartGame() {
+        checkmateModalRef.current?.classList.add("hidden");
+        setBoard(initialBoard.clone());
+    }
     return (
         <>
-            <p style={{ color: "white", fontSize: "24px" }}>{board.totalTurns}</p>
+            <div className="flex justify-between">
+                <p style={{ color: "white", fontSize: "24px" }}>Total Turns: {board.totalTurns}</p>
+                <p style={{ color: "white", fontSize: "24px" }}>Turn: {mover}</p>
+            </div>
             <div className="absolute top-0 right-0 bottom-0 left-0 hidden" ref={modalRef}>
                 <div className="flex justify-around items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-60 w-[640px] bg-[rgba(127,127,127,0.7)]">
                     <img onClick={() => promotePawn(PieceType.ROOK)} className="h-[120px] hover:cursor-pointer hover:bg-[rgba(255,255,255,0.3)] rounded-full p-5" src={`assets/images/rook_${promotionTeamType()}.png`} />
                     <img onClick={() => promotePawn(PieceType.BISHOP)} className="h-[120px] hover:cursor-pointer hover:bg-[rgba(255,255,255,0.3)] rounded-full p-5" src={`assets/images/bishop_${promotionTeamType()}.png`} />
                     <img onClick={() => promotePawn(PieceType.KNIGHT)} className="h-[120px] hover:cursor-pointer hover:bg-[rgba(255,255,255,0.3)] rounded-full p-5" src={`assets/images/knight_${promotionTeamType()}.png`} />
                     <img onClick={() => promotePawn(PieceType.QUEEN)} className="h-[120px] hover:cursor-pointer hover:bg-[rgba(255,255,255,0.3)] rounded-full p-5" src={`assets/images/queen_${promotionTeamType()}.png`} />
+                </div>
+            </div>
+            <div className="absolute top-0 right-0 bottom-0 left-0 hidden" ref={checkmateModalRef}>
+                <div className="flex justify-around items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-60 w-[640px] bg-[rgba(127,127,127,0.7)]">
+                    <div className="flex flex-col gap-12">
+                        <span className="text-3xl">{board.winningTeam === TeamType.OUR ? "White" : "Black"} Team Won!!</span>
+                        <button onClick={restartGame} className="bg-[#779556] text-white p-6 text-3xl border-none rounded-lg hover:cursor-pointer">Play Again</button>
+                    </div>
                 </div>
             </div>
             <Chessboard playMove={playMove} pieces={board.pieces} />

@@ -43,3 +43,4 @@ export const initialBoard: Board = new Board(
   ],
   1
 );
+initialBoard.calculateAllMoves();
