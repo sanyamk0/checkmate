@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Game from "./components/Game/Game"
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
-import Home from "./components/Home";
+import Home from "./pages/Home"
 
 const router = createBrowserRouter([
   {
