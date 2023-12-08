@@ -9,6 +9,7 @@ const Home = () => {
   const options = [
     { title: "Home", link: "/", icon: <AiFillHome /> },
     { title: "Play", link: "/game", icon: <IoGameController /> },
+    { title: "Create Game", link: "/create", icon: <IoMdCreate /> },
     { title: "Join Game", link: "/join-game", icon: <BsFillPersonPlusFill /> },
     { title: "Login", link: "/login", icon: <BiSolidLogIn /> },
   ];
@@ -22,7 +23,7 @@ const Home = () => {
                 <img
                   src="/assets/images/checkmate.jpg"
                   alt="Checkmate"
-                  className="w-24 mx-auto bg-transparent"
+                  className="w-24 mx-auto bg-transparent rounded-lg"
                 />
               </div>
               <hr className="my-5 mx-5 rounded" />
@@ -65,16 +66,20 @@ const Home = () => {
             className="h-96 w-96 my-32 mx-32 rounded"
           />
           <div className="flex flex-col justify-center">
-            <p className="text-5xl font-semibold m-5">Play Chess Online </p>
+            <p className="text-5xl font-semibold m-5">Play Chess Online</p>
             <div className="flex flex-col justify-center items-center gap-10 p-4">
-              <button className="flex gap-2 items-center w-48 h-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg">
-                <IoMdCreate className="h-5 w-5" />
-                Create Game
-              </button>
-              <button className="flex gap-2 items-center w-48 h-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg">
-                <BsFillPersonPlusFill className="h-5 w-5" />
-                Join Game
-              </button>
+              <Link to="/create">
+                <button className="flex gap-2 items-center w-48 h-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg">
+                  <IoMdCreate className="h-5 w-5" />
+                  Create Game
+                </button>
+              </Link>
+              <Link to="/join-game">
+                <button className="flex gap-2 items-center w-48 h-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg">
+                  <BsFillPersonPlusFill className="h-5 w-5" />
+                  Join Game
+                </button>
+              </Link>
             </div>
           </div>
         </div>
