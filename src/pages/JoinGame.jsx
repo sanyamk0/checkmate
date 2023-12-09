@@ -32,7 +32,7 @@ const JoinGame = () => {
     const handleSecondUserJoined = () => {
       console.log("Second user has joined the room");
       // Navigate to the chess game screen
-      navigate("/game");
+      navigate("/chess");
     };
 
     // Set up event listeners when the component mounts

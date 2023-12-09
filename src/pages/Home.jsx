@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { AiFillHome, AiFillGithub, AiFillLinkedin } from "react-icons/ai";
-import { IoGameController } from "react-icons/io5";
 import { BsFillPersonPlusFill } from "react-icons/bs";
 import { BiSolidLogIn } from "react-icons/bi";
 import { IoMdCreate } from "react-icons/io";
@@ -8,7 +7,6 @@ import { IoMdCreate } from "react-icons/io";
 const Home = () => {
   const options = [
     { title: "Home", link: "/", icon: <AiFillHome /> },
-    { title: "Play", link: "/game", icon: <IoGameController /> },
     { title: "Create Game", link: "/create", icon: <IoMdCreate /> },
     { title: "Join Game", link: "/join-game", icon: <BsFillPersonPlusFill /> },
     { title: "Login", link: "/login", icon: <BiSolidLogIn /> },
@@ -30,7 +28,7 @@ const Home = () => {
               <div>
                 <ul className="mt-6 space-y-2 tracking-wide">
                   {options.map((option) => (
-                    <li className="min-w-max">
+                    <li key={option.title} className="min-w-max">
                       <Link
                         to={option.link}
                         className="relative flex items-center space-x-4 px-4 py-3"

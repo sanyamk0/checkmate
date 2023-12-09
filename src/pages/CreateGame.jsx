@@ -56,7 +56,7 @@ const CreateGame = () => {
       socket.on("create", handleCreateResponse);
       socket.on("secondUserJoined", () => {
         console.log("Second user has joined the room");
-        navigate("/game"); // Navigate to the chess game screen
+        navigate("/chess"); // Navigate to the chess game screen
       });
     }
     // Clean up the event listener when the component unmounts
