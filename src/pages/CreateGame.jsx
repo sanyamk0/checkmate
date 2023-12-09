@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSocket } from "../contexts/SocketContext";
 import { IoMdCopy, IoMdCreate } from "react-icons/io";
 import { TiTick } from "react-icons/ti";
+import { useNavigate } from "react-router-dom";
 
 const CreateGame = () => {
   const socket = useSocket();
@@ -9,6 +10,7 @@ const CreateGame = () => {
   const [name, setName] = useState("");
   const [serverData, setServerData] = useState(null);
   const [copy, setCopy] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setName(e.target.value);
@@ -52,15 +54,20 @@ const CreateGame = () => {
     // Check if the socket exists before setting up the event listener
     if (socket) {
       socket.on("create", handleCreateResponse);
+      socket.on("secondUserJoined", () => {
+        console.log("Second user has joined the room");
+        navigate("/game"); // Navigate to the chess game screen
+      });
     }
     // Clean up the event listener when the component unmounts
     return () => {
       // Check if the socket and event listener exist before removing
       if (socket) {
         socket.off("create", handleCreateResponse);
+        socket.off("secondUserJoined");
       }
     };
-  }, [socket]);
+  }, [socket, navigate]);
 
   return (
     <>
