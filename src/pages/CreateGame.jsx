@@ -51,13 +51,13 @@ const CreateGame = () => {
     const handleCreateResponse = (args) => {
       setServerData({ name: args.name, randomId: args.randomId });
     };
+    const handleSecondUserJoined = ({ gameId }) => {
+      navigate(`/chess/${gameId}`); // Navigate to the chess game screen
+    };
     // Check if the socket exists before setting up the event listener
     if (socket) {
       socket.on("create", handleCreateResponse);
-      socket.on("secondUserJoined", () => {
-        console.log("Second user has joined the room");
-        navigate("/chess"); // Navigate to the chess game screen
-      });
+      socket.on("secondUserJoined", handleSecondUserJoined);
     }
     // Clean up the event listener when the component unmounts
     return () => {

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { initialBoard } from "../../Constants";
 import Chessboard from "../Chessboard/Chessboard";
 // import { bishopMove, kingMove, knightMove, pawnMove, queenMove, rookMove } from "../../Referee/rules";
@@ -6,13 +6,15 @@ import { Piece, Position } from "../../models";
 import { PieceType, TeamType } from "../../Types";
 import { Pawn } from "../../models/Pawn";
 import { Board } from "../../models/Board";
+import { useSocket } from "../../contexts/SocketContext";
 
-export default function Referee() {
+export default function Referee({ gameId }: { gameId: string }) {
     const [board, setBoard] = useState<Board>(initialBoard.clone());
     const [promotionPawn, setPromotionPawn] = useState<Piece>()
     const modalRef = useRef<HTMLDivElement>(null)
     const checkmateModalRef = useRef<HTMLDivElement>(null)
     const mover = board.totalTurns % 2 === 0 ? "Black" : "White";
+    const socket = useSocket();
 
     function playMove(playedPiece: Piece, destination: Position): boolean {
         //If Playing Piece doesn't have any moves return
@@ -50,6 +52,7 @@ export default function Referee() {
                 return clonedPlayedPiece;
             });
         }
+        socket.emit("play-move", { playedPiece, destination, gameId })
         return playedMoveIsValid;
     }
     function isEnPassantmove(
@@ -160,6 +163,30 @@ export default function Referee() {
         checkmateModalRef.current?.classList.add("hidden");
         setBoard(initialBoard.clone());
     }
+
+    useEffect(() => {
+        // Check if socket is not null before setting up the event listener
+        if (socket) {
+            const handlePlayMove = ({ playedPiece, destination }: { playedPiece: Piece, destination: Position }) => {
+                // Update the board with the received move
+                setBoard((prevBoard) => {
+                    const clonedBoard = prevBoard.clone();
+                    clonedBoard.playMove(false, true, playedPiece, destination);
+                    return clonedBoard;
+                });
+            }
+            // Set up the event listener
+            socket.on('play-move', handlePlayMove);
+            // Clean up the socket connection when the component unmounts
+            return () => {
+                // Remove the event listener
+                socket.off('play-move', handlePlayMove);
+            };
+        }
+        // If socket is null, return an empty cleanup function
+        return () => { };
+    }, [socket])
+
     return (
         <>
             <div className="flex justify-between">

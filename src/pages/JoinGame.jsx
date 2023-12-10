@@ -29,10 +29,9 @@ const JoinGame = () => {
     };
 
     // Function to handle the second user joining
-    const handleSecondUserJoined = () => {
-      console.log("Second user has joined the room");
+    const handleSecondUserJoined = ({ gameId }) => {
       // Navigate to the chess game screen
-      navigate("/chess");
+      navigate(`/chess/${gameId}`);
     };
 
     // Set up event listeners when the component mounts

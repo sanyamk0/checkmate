@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     element: <Home />
   },
   {
-    path: "/chess",
+    path: "/chess/:id",
     element: <MultiplayerChess />
   },
   {

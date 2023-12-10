@@ -15,7 +15,7 @@ export class Piece {
     hasMoved: boolean,
     possibleMoves: Position[] = []
   ) {
-    this.image = `assets/images/${type}_${team}.png`;
+    this.image = `${window.location.origin}/assets/images/${type}_${team}.png`;
     this.position = position;
     this.type = type;
     this.team = team;
