@@ -189,7 +189,7 @@ export default function Referee({ gameId }: { gameId: string }) {
 
     return (
         <>
-            <div className="flex justify-between">
+            <div className="flex justify-between bg-black">
                 <p style={{ color: "white", fontSize: "24px" }}>Total Turns: {board.totalTurns}</p>
                 <p style={{ color: "white", fontSize: "24px" }}>Turn: {mover}</p>
             </div>

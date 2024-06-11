@@ -57,7 +57,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="flex">
+        {/* <div className="flex">
           <img
             src="/assets/images/chessboard.png"
             alt="chessboard"
@@ -80,6 +80,19 @@ const Home = () => {
               </Link>
             </div>
           </div>
+        </div> */}
+        <div className="flex flex-col w-full items-center">
+          <img
+            src="/assets/images/chessboard.png"
+            alt="chessboard"
+            className="h-96 w-96 m-16 rounded"
+          />
+          <Link to="/game">
+            <button className="flex gap-2 items-center w-48 h-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg">
+              <IoMdCreate className="h-5 w-5" />
+              Play Game
+            </button>
+          </Link>
         </div>
       </div>
     </>

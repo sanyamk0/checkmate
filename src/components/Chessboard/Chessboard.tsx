@@ -87,14 +87,16 @@ const Chessboard = ({ playMove, pieces }: Props) => {
     }
     return (
         <>
-            <div
-                onMouseMove={(e) => movePiece(e)}
-                onMouseDown={e => grabPiece(e)}
-                onMouseUp={(e) => dropPiece(e)}
-                className="h-[640px] w-[640px] grid grid-cols-8 grid-rows-[8]"
-                ref={chessboardRef}
-            >
-                {board}
+            <div className="flex h-screen w-full justify-center bg-black">
+                <div
+                    onMouseMove={(e) => movePiece(e)}
+                    onMouseDown={e => grabPiece(e)}
+                    onMouseUp={(e) => dropPiece(e)}
+                    className="h-[640px] w-[640px] grid grid-cols-8 grid-rows-[8]"
+                    ref={chessboardRef}
+                >
+                    {board}
+                </div>
             </div>
         </>
     )
