@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import Tile from "../Tile/Tile";
-import { VERTICAL_AXIS, HORIZONTAL_AXIS, GRID_SIZE } from "../../Constants";
-import { Piece, Position } from "../../models";
+import Tile from "./Tile/Tile"
+import { VERTICAL_AXIS, HORIZONTAL_AXIS, GRID_SIZE } from "../Constants";
+import { Piece, Position } from "../models";
 
 interface Props {
     playMove: (piece: Piece, position: Position) => boolean;
@@ -87,7 +87,7 @@ const Chessboard = ({ playMove, pieces }: Props) => {
     }
     return (
         <>
-            <div className="flex h-screen w-full justify-center bg-black">
+            <div className="flex h-screen w-full items-center justify-center bg-black">
                 <div
                     onMouseMove={(e) => movePiece(e)}
                     onMouseDown={e => grabPiece(e)}

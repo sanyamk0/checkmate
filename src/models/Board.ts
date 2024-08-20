@@ -21,7 +21,7 @@ export class Board {
     this.totalTurns = totalTurns;
   }
   get currentTeam(): TeamType {
-    return this.totalTurns % 2 === 0 ? TeamType.OPPONENT : TeamType.OUR;
+    return this.totalTurns % 2 === 0 ? TeamType.OUR : TeamType.OPPONENT;
   }
   calculateAllMoves() {
     for (const piece of this.pieces) {

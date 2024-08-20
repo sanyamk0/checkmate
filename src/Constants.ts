@@ -41,6 +41,6 @@ export const initialBoard: Board = new Board(
     new Pawn(new Position(6, 1), TeamType.OUR, false),
     new Pawn(new Position(7, 1), TeamType.OUR, false),
   ],
-  1
+  0
 );
 initialBoard.calculateAllMoves();
