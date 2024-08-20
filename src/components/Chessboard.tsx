@@ -87,7 +87,7 @@ const Chessboard = ({ playMove, pieces }: Props) => {
     }
     return (
         <>
-            <div className="flex h-screen w-full items-center justify-center bg-black">
+            <div className="flex h-screen w-full justify-center bg-black">
                 <div
                     onMouseMove={(e) => movePiece(e)}
                     onMouseDown={e => grabPiece(e)}
